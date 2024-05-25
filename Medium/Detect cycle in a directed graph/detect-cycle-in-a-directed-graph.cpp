@@ -4,43 +4,40 @@ using namespace std;
 
 // } Driver Code Ends
 class Solution {
-    bool dfsCheck(int node, int V, vector<int> adj[], int vis[], int pathVis[])
-    {
-        vis[node] = 1;
-        pathVis[node] =1;
-        for(auto it : adj[node])
-        {
-            // when node is not visited
-            if(!vis[it])
-            {
-                if(dfsCheck(it,V,adj,vis,pathVis)==true) return true;
-               
-            }
-             else if(pathVis[it] == 1) return true;
-        }
-        
-        
-        
-        
-        pathVis[node] =0;
-        return false;
-        
-    }
-    
   public:
     // Function to detect cycle in a directed graph.
     bool isCyclic(int V, vector<int> adj[]) {
         // code here
-        int vis[V] ={0};
-        int pathVis[V] ={0};
-        for(int i=0; i<V; i++)
-        {
-            if(!vis[i])
-            {
-                if(dfsCheck(i,V,adj,vis,pathVis) == true ) return true;
-            }
-        }
-        return false;
+        int indegree[V] = {0};
+		for (int i = 0; i < V; i++) {
+			for (auto it : adj[i]) {
+				indegree[it]++;
+			}
+		}
+
+		queue<int> q;
+		for (int i = 0; i < V; i++) {
+			if (indegree[i] == 0) {
+				q.push(i);
+			}
+		}
+		vector<int> topo;
+		while (!q.empty()) {
+			int node = q.front();
+			q.pop();
+			topo.push_back(node);
+			// node is in your topo sort
+			// so please remove it from the indegree
+
+			for (auto it : adj[node]) {
+				indegree[it]--;
+				if (indegree[it] == 0) q.push(it);
+			}
+		}
+
+        if(topo.size()== V) return false;
+        return true;
+
     }
 };
 
