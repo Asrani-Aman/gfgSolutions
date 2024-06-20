@@ -11,34 +11,29 @@ class Solution
     vector <int> dijkstra(int V, vector<vector<int>> adj[], int S)
     {
         // Code here
-        // the solution by using prioritu quue mean heap
-         priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
-         vector<int> dist(V,INT_MAX);
-         dist[S] = 0;
-         pq.push({0,S});
-         
-         while(!pq.empty())
-         {
-            int node  = pq.top().second;
-            int distant  = pq.top().first;
-            pq.pop();
-            
-            for(auto it : adj[node])
+        vector<int> dis(V,1e9);
+        set<pair<int,int>> st;
+        st.insert({0,S});
+        dis[S] = 0;
+        while(!st.empty())
+        {
+            auto it = *(st.begin());
+            int node  = it.second;
+            int dist = it.first;
+            st.erase(it);
+            for(auto s : adj[node])
             {
-                int adjNode = it[0];
-                int edgeWeight = it[1];
-                if(distant+edgeWeight<dist[adjNode])
+                int adjNode = s[0];
+                int adjDis = s[1];
+                if(dist+adjDis<dis[adjNode])
                 {
-                    dist[adjNode] = distant+edgeWeight;
-                    pq.push({distant+edgeWeight,adjNode});
+                    if(dis[adjNode] != 1e9) st.erase({dis[adjNode], adjNode});
+                    dis[adjNode] = dist+adjDis;
+                    st.insert({dis[adjNode],adjNode});
                 }
             }
-         }
-         for(int i=0; i< V; i++)
-         {
-            if(dist[i] == INT_MAX) dist[i] = -1;
-         }
-         return dist;
+        }
+        return dis;
     }
 };
 
